@@ -11,19 +11,19 @@ import HealthKit
 struct MetricsView: View {
     @EnvironmentObject var heartbeatManager: HeartBeatManager
     var body: some View {
-        TimelineView(MetricsTimelineSchedule(from: heartbeatManager.builder?.startDate ?? Date())) { context in
+        TimelineView(MetricsTimelineSchedule(from: Date())) { context in
             VStack(alignment: .leading) {
-                ElapsedTimeView(elapsedTime: heartbeatManager.builder?.elapsedTime ?? 0, showSubseconds: context.cadence == .live)
-                    .foregroundStyle(.blue)
                 Text(heartbeatManager.heartRate.formatted(.number.precision(.fractionLength(0))) + " bpm")
-                Text(heartbeatManager.averageHeartRate.formatted(.number.precision(.fractionLength(0))) + " bpm")
             }
             .font(.system(.title, design: .rounded).monospacedDigit().lowercaseSmallCaps())
             .frame(maxWidth: .infinity, alignment: .leading)
             .ignoresSafeArea(edges: .bottom)
             .scenePadding()
             .onAppear {
-                heartbeatManager.startWorkout()
+                heartbeatManager.latestHarteRate()
+            }
+            .onDisappear{
+                heartbeatManager.stopTimer()
             }
         }
     }
